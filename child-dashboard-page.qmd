@@ -1,0 +1,30 @@
+# `r title`
+
+## {height=25%}
+```{r}
+#| content: valuebox
+#| title: "Total Participants"
+list(
+  icon = "trash",
+  color = "danger",
+  value = nrow(data)
+)
+```
+
+##
+```{r}
+#| title: 'this is the network'
+#| expandable: true
+
+create_network_viz(data, link_distance = 100, charge = -100)
+
+```
+
+```{r}
+#| title: 'this is the network'
+#| expandable: true
+data |>
+  gt() |> 
+  opt_interactive()
+
+```
