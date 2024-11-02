@@ -1,0 +1,63 @@
+---
+title: "Untitled"
+format: dashboard
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(gt)
+library(networkD3)
+library(pins)
+
+board <- pins::board_folder('board')
+
+data <- pins::pin_read(board, 'processed-data')
+
+data <- data |> select(-budget) |> drop_na()
+
+create_network_viz <- \(data, link_distance, charge) {
+  
+  nodes <- data.frame(name = unique(c(data$participants, data$matched)))  |>
+    mutate(Group = row_number())
+  
+  links <- data |>
+    mutate(
+      source = match(participants, nodes$name) - 1,
+      target = match(matched, nodes$name) - 1
+    )  |> 
+    mutate(value = 1) |> 
+    as.data.frame()
+  
+  forceNetwork(
+    Links = links,
+    Nodes = nodes,
+    Source = "source",
+    Target = "target",
+    NodeID = "name",
+    Group = "Group",
+    Value = 'value',
+    opacity = 0.9,
+    zoom = TRUE,
+    fontSize = 15,
+    opacityNoHover = 1,
+    linkWidth = 1,
+    charge = charge,
+    arrows = FALSE,
+    linkDistance = link_distance
+  )
+  
+}
+
+
+
+```
+
+## This is the network
+```{r}
+#| title: 'this is the network'
+#| expandable: true
+create_network_viz(data, link_distance = 100, charge = -200)
+
+```
+
