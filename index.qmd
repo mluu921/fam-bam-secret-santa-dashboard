@@ -1,14 +1,8 @@
 ---
-<<<<<<< HEAD
 format: dashboard
 editor: visual
 editor_options: 
   chunk_output_type: console
-=======
-title: "Untitled"
-format: dashboard
-editor: visual
->>>>>>> d0ccb60a619550b0993ac7ab40f898e6362b9ed7
 ---
 
 ```{r}
@@ -56,7 +50,6 @@ create_network_viz <- \(data, link_distance, charge) {
   
 }
 
-<<<<<<< HEAD
 ```
 
 ```{r}
@@ -74,17 +67,6 @@ data |>
     
     
   }) |> cat(sep = '\n')
-=======
 
-
-```
-
-## This is the network
-```{r}
-#| title: 'this is the network'
-#| expandable: true
-create_network_viz(data, link_distance = 100, charge = -200)
-
->>>>>>> d0ccb60a619550b0993ac7ab40f898e6362b9ed7
 ```
 
