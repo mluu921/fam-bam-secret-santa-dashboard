@@ -55,15 +55,18 @@ create_network_viz <- \(data, link_distance, charge) {
 ```{r}
 #| results: asis
 
-data |> 
-  group_nest(year) |> 
-  mutate(year = as.numeric(year)) |> 
-  arrange(desc(year)) |> 
-  mutate(year = as_factor(year)) |> 
-  deframe() |> 
+data |>
+  group_nest(year) |>
+  mutate(year = as.numeric(year)) |>
+  arrange(desc(year)) |>
+  mutate(year = as_factor(year)) |>
+  deframe() |>
   imap_chr(\(data, title) {
-    
-    knitr::knit_child('child-dashboard-page.qmd', envir = list(data = data, title = title), quiet = TRUE)
+    knitr::knit_child(
+      'child-dashboard-page.qmd',
+      envir = list(data = data, title = title),
+      quiet = TRUE
+    )
     
     
   }) |> cat(sep = '\n')

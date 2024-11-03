@@ -5,26 +5,33 @@
 #| content: valuebox
 #| title: "Total Participants"
 list(
-  icon = "trash",
-  color = "danger",
+  icon = "person-arms-up",
+  color = "primary",
   value = nrow(data)
 )
 ```
 
 ##
 ```{r}
-#| title: 'this is the network'
 #| expandable: true
 
-create_network_viz(data, link_distance = 100, charge = -100)
+create_network_viz(data, link_distance = 50, charge = -50)
 
 ```
 
 ```{r}
-#| title: 'this is the network'
+#| title: 'Matches'
 #| expandable: true
+#| out-width: 100%
+#| height: 100%
 data |>
   gt() |> 
-  opt_interactive()
+  opt_interactive(
+    use_compact_mode = TRUE,
+    use_filters = TRUE,
+    use_highlight = TRUE,
+    use_search = TRUE,
+    page_size_default = 20
+  )
 
 ```
