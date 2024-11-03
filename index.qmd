@@ -1,4 +1,5 @@
 ---
+title: 'FAM BAM Secret Santa'
 format: dashboard
 editor: visual
 editor_options: 
@@ -15,17 +16,17 @@ board <- pins::board_folder('board')
 
 data <- pins::pin_read(board, 'processed-data')
 
-data <- data |> select(-budget) |> drop_na()
+data <- data |> drop_na()
 
 create_network_viz <- \(data, link_distance, charge) {
   
-  nodes <- data.frame(name = unique(c(data$participants, data$matched)))  |>
+  nodes <- data.frame(name = unique(c(data$participants_giver, data$participants_receiver)))  |>
     mutate(Group = row_number())
   
   links <- data |>
     mutate(
-      source = match(participants, nodes$name) - 1,
-      target = match(matched, nodes$name) - 1
+      source = match(participants_giver, nodes$name) - 1,
+      target = match(participants_receiver, nodes$name) - 1
     )  |> 
     mutate(value = 1) |> 
     as.data.frame()
@@ -64,7 +65,7 @@ data |>
   imap_chr(\(data, title) {
     knitr::knit_child(
       'child-dashboard-page.qmd',
-      envir = list(data = data, title = title),
+      envir = environment(),
       quiet = TRUE
     )
     
