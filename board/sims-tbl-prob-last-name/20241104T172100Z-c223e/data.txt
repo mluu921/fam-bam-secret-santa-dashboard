@@ -1,0 +1,10 @@
+file: sims-tbl-prob-last-name.rds
+file_size: 19965
+pin_hash: c223e3d44a31f5ef
+type: rds
+title: 'sims-tbl-prob-last-name: a pinned list'
+description: ~
+tags: ~
+urls: ~
+created: 20241104T172100Z
+api_version: 1

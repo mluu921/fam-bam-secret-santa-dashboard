@@ -62,7 +62,7 @@ create_network_viz <- \(data, link_distance, charge) {
 ```{r}
 #| expandable: true
 #| title: What are the odds of matching based on surname ?
-out <- pins::pin_read(board, 'sims-plot-prob-last-name')
+out <- pins::pin_read(board, 'sims-tbl-prob-last-name')
 
 out
 ```

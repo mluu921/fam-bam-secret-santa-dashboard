@@ -62,19 +62,23 @@ plot_data <- sims  |>
   group_by(participant_last, match_last) |> 
   summarise(prob = mean(prob))
 
-p <- ggplot(plot_data, aes(x = participant_last, y = match_last, fill = prob)) +
-  geom_tile() +
-  geom_text(aes(label = scales::percent(prob, .1)), vjust = 1) +
-  scale_fill_viridis_c(labels = scales::label_percent(.1)) +
-  theme_minimal(base_size = 15) +
-  theme(legend.position = 'bottom', panel.grid = element_blank()) +
-  guides(fill = guide_colorbar(
-    barwidth = 20,
-    barheight = 1,
-    title.position = 'top',
-  )) +
-  labs(fill = 'Probability', x = NULL, y = NULL)
+plot_data <- plot_data |> 
+  ungroup() |> 
+  pivot_wider(
+    names_from = match_last,
+    values_from = prob
+  )
 
-p <- plotly::ggplotly(p)
-
-pins::pin_write(board, p, 'sims-plot-prob-last-name', type = 'rds')
+tbl <- plot_data |> 
+  gt() |> 
+  fmt_percent() |> 
+  fmt_missing(missing_text = '') |> 
+  data_color(
+    columns = 2:ncol(plot_data),
+    palette = 'viridis'
+  ) |> 
+  opt_interactive(
+    use_compact_mode = TRUE
+  )
+  
+pins::pin_write(board, tbl, 'sims-tbl-prob-last-name', type = 'rds')
