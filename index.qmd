@@ -74,7 +74,7 @@ plot_data <- data |>
 
 leaflet(plot_data) |> 
   addTiles() |> 
-  addMarkers(~long_giver, ~lat_giver, clusterOptions = markerClusterOptions())
+  addMarkers(~long_giver, ~lat_giver, popup = ~participants_giver, clusterOptions = markerClusterOptions())
 
 ```
 

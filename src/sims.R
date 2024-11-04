@@ -60,7 +60,10 @@ plot_data <- sims  |>
   mutate(prob = n / sum(n)) |> 
   ungroup() |> 
   group_by(participant_last, match_last) |> 
-  summarise(prob = mean(prob))
+  summarise(prob = mean(prob)) |> 
+  ungroup()
+
+prob_range <- c(min(plot_data$prob), max(plot_data$prob))
 
 plot_data <- plot_data |> 
   ungroup() |> 
@@ -71,12 +74,13 @@ plot_data <- plot_data |>
 
 tbl <- plot_data |> 
   gt() |> 
-  fmt_percent(decimals = 3) |> 
+  fmt_percent(decimals = 2) |> 
   fmt_missing(missing_text = '') |> 
   cols_label(participant_last = '') |> 
   data_color(
     columns = 2:ncol(plot_data),
-    palette = 'viridis'
+    palette = 'viridis',
+    domain = prob_range
   )
 
 tbl
