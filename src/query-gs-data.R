@@ -33,12 +33,15 @@ data <- query_gs(url)
 
 demos <- read_sheet(url, sheet = 'participants')
 
+demos <- demos |> 
+  geocode(location)
+
 data <- data |>
   group_by(year) |> 
   mutate(i = row_number()) |> 
   ungroup() |> 
-  pivot_longer(2:3, values_to = 'participants', names_to = 'role') |>
+  pivot_longer(-c(year, i), names_to = 'role', values_to = 'participants') |> 
   left_join(demos, by = join_by(participants)) |> 
-  pivot_wider(names_from = role, values_from = c(participants, gender))
+  pivot_wider(names_from = role, values_from = c(participants, gender, location, lat, long))
 
 pins::pin_write(board, data, 'processed-data', type = 'rds')

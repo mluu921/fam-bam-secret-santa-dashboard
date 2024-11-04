@@ -14,6 +14,11 @@ library(tidyverse)
 library(gt)
 library(networkD3)
 library(pins)
+library(leaflet)
+library(tidygeocoder)
+
+# source('src/query-gs-data.R')
+# source('src/sims.R')
 
 board <- pins::board_folder('board')
 
@@ -57,6 +62,21 @@ create_network_viz <- \(data, link_distance, charge) {
 ```
 
 # Home
+
+## 
+```{r}
+#| expandable: true
+#| title: Where are all the participants from?
+
+plot_data <- data |> 
+  select(participants_giver, location_giver, long_giver, lat_giver) |> 
+  distinct()
+
+leaflet(plot_data) |> 
+  addTiles() |> 
+  addMarkers(~long_giver, ~lat_giver, clusterOptions = markerClusterOptions())
+
+```
 
 ## 
 ```{r}

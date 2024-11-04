@@ -71,14 +71,14 @@ plot_data <- plot_data |>
 
 tbl <- plot_data |> 
   gt() |> 
-  fmt_percent() |> 
+  fmt_percent(decimals = 3) |> 
   fmt_missing(missing_text = '') |> 
+  cols_label(participant_last = '') |> 
   data_color(
     columns = 2:ncol(plot_data),
     palette = 'viridis'
-  ) |> 
-  opt_interactive(
-    use_compact_mode = TRUE
   )
+
+tbl
   
 pins::pin_write(board, tbl, 'sims-tbl-prob-last-name', type = 'rds')
