@@ -83,10 +83,23 @@ leaflet(plot_data) |>
 ```{r}
 #| expandable: true
 #| title: What are the odds of matching based on surname ?
+
 out <- pins::pin_read(board, 'sims-tbl-prob-last-name')
 
 out
 ```
+
+## 
+
+```{r}
+#| expandable: true
+#| title: What are the odds of matching based on gender ?
+
+out <- pins::pin_read(board, 'sims-tbl-prob-gender')
+
+out
+```
+
 
 ## 
 

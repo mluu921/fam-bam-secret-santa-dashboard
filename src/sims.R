@@ -31,7 +31,7 @@ secret_santa <- function(participants) {
 
 # -------------------------------------------------------------------------
 
-sims <- tibble(i = 1:10000)
+sims <- tibble(i = 1:100000)
 
 set.seed(1)
 sims$draws <- map(sims$i, \(x) secret_santa(participants), .progress = TRUE)
@@ -52,16 +52,17 @@ sims <- sims |>
     concordant_gender = ifelse(gender_participant == gender_match, 1, 0)
   )
 
+
+# -------------------------------------------------------------------------
+
+
 plot_data <- sims  |> 
   select(i, participant_last, match_last) |> 
-  group_by(i, participant_last, match_last) |> 
-  count() |> 
-  group_by(i) |> 
+  count(participant_last, match_last) |> 
+  group_by(participant_last) |>
   mutate(prob = n / sum(n)) |> 
   ungroup() |> 
-  group_by(participant_last, match_last) |> 
-  summarise(prob = mean(prob)) |> 
-  ungroup()
+  select(-n)
 
 prob_range <- c(min(plot_data$prob), max(plot_data$prob))
 
@@ -74,7 +75,7 @@ plot_data <- plot_data |>
 
 tbl <- plot_data |> 
   gt() |> 
-  fmt_percent(decimals = 2) |> 
+  fmt_percent(decimals = 0) |> 
   fmt_missing(missing_text = '') |> 
   cols_label(participant_last = '') |> 
   data_color(
@@ -86,3 +87,37 @@ tbl <- plot_data |>
 tbl
   
 pins::pin_write(board, tbl, 'sims-tbl-prob-last-name', type = 'rds')
+
+
+# -------------------------------------------------------------------------
+
+plot_data <- sims |> 
+  select(gender_participant, gender_match) |> 
+  count(gender_participant, gender_match) |> 
+  mutate(prob = n / sum(n)) |> 
+  select(
+    -n
+  ) 
+
+prob_range <- c(min(plot_data$prob), max(plot_data$prob))
+
+plot_data <- plot_data |> 
+  pivot_wider(
+    names_from = gender_match,
+    values_from = prob
+  )
+
+tbl <- plot_data |> 
+  gt() |> 
+  fmt_percent(decimals = 0) |> 
+  fmt_missing(missing_text = '') |> 
+  cols_label(gender_participant = '') |> 
+  data_color(
+    columns = 2:ncol(plot_data),
+    palette = 'viridis',
+    domain = prob_range
+  )
+
+tbl
+
+pins::pin_write(board, tbl, 'sims-tbl-prob-gender', type = 'rds')
