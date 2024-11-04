@@ -3,6 +3,7 @@ title: 'FAM BAM Secret Santa'
 format:
   dashboard:
     scrolling: true
+    theme: simplex
 editor: visual
 editor_options: 
   chunk_output_type: console
@@ -40,10 +41,10 @@ create_network_viz <- \(data, link_distance, charge) {
     NodeID = "name",
     Group = "name",
     Value = 'value',
-    opacity = 0.9,
+    opacity = .9,
     zoom = TRUE,
     fontSize = 15,
-    opacityNoHover = 1,
+    opacityNoHover = .5,
     linkWidth = 1,
     charge = charge,
     arrows = FALSE,
