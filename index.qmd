@@ -19,7 +19,8 @@ library(tidygeocoder)
 library(igraph)
 
 # source('src/query-gs-data.R')
-# source('src/sims.R')
+# source('src/tbl-sims.R')
+# source('src/tbl-prob-repeat-non-repeat.R')
 
 board <- pins::board_folder("board")
 
@@ -130,44 +131,10 @@ out
 
 ```{r}
 #| expandable: true
-#| title: Which year had the most participants?
+#| title: What are the odds of matching with the same person again?
 
-local({
-  plot_data <- data |>
-    group_by(year) |>
-    summarise(n = n())
-  
-  plot_data <- plot_data |>
-    mutate(color = ifelse(n == max(plot_data$n), 'red', 'grey90'))
-  
-  p <- ggplot(plot_data, aes(x = year, y = n, fill = color)) +
-    geom_col() +
-    scale_fill_identity() +
-    theme_minimal(base_size = 15) +
-    theme(panel.grid = element_blank(), legend.position = 'none') +
-    scale_y_continuous(breaks = seq(0, max(plot_data$n), by = 1)) +
-    labs(x = 'Year', y = 'Number of Participants')
-  
-  plotly::ggplotly(p)
-})
+out <- pins::pin_read(board, 'tbl-prob-repeat-non-repeat')
 
+out
 ```
-
-```{r}
-#| results: asis
-#| eval: false
-out <- pmap_chr(params, ~ {
-
-    knitr::knit_child(
-      'child-dashboard-page.qmd',
-      envir = environment(),
-      quiet = TRUE
-    )
-
-})
-
-cat(unlist(out), sep = '\n')
-
-```
-
 
