@@ -1,9 +1,10 @@
 ---
-title: 'FAM BAM Secret Santa'
+title: 'FAM BAM Secret Santa Stats!'
 format:
   dashboard:
-    scrolling: true
+    scrolling: false
     theme: simplex
+    orientation: columns
 editor_options: 
   chunk_output_type: console
 ---
@@ -58,12 +59,21 @@ create_network_viz <- \(data, link_distance, charge) {
 ```
 
 ## 
+
 ```{r}
 #| expandable: true
 #| title: Who has given and received gifts from who?
 
-create_network_viz(data, link_distance = 200, charge = -100)
+create_network_viz(data, link_distance = 300, charge = -100)
 
+
+```
+
+##
+
+```{r}
+#| expandable: true
+#| title: When did who match with who?
 local({
   tbl_data <- data |>
     select(year, participants_giver, participants_receiver) |>
@@ -84,8 +94,6 @@ local({
 
 ```
 
-## 
-
 ```{r}
 #| expandable: true
 #| title: Where are all the participants from?
@@ -100,7 +108,7 @@ leaflet(plot_data) |>
 
 ```
 
-## 
+##
 
 ```{r}
 #| expandable: true
@@ -111,8 +119,6 @@ out <- pins::pin_read(board, 'sims-tbl-prob-last-name')
 out
 ```
 
-## 
-
 ```{r}
 #| expandable: true
 #| title: What are the odds of matching based on gender ?
@@ -121,11 +127,6 @@ out <- pins::pin_read(board, 'sims-tbl-prob-gender')
 
 out
 ```
-
-
-
-
-## 
 
 ```{r}
 #| expandable: true
@@ -151,8 +152,6 @@ local({
 })
 
 ```
-
-
 
 ```{r}
 #| results: asis
