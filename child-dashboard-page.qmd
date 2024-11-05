@@ -6,8 +6,10 @@ total_participants <- nrow(data)
 total_male <- sum(data$gender_giver == 'M')
 
 total_female <- sum(data$gender_giver == 'F')
-```
 
+p <- create_network_viz(data, link_distance = 50, charge = -50)
+
+```
 
 ## {height=25%}
 ```{r}
@@ -44,7 +46,7 @@ list(
 ```{r}
 #| expandable: true
 
-create_network_viz(data, link_distance = 50, charge = -50)
+p
 
 ```
 

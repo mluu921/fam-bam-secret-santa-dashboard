@@ -15,48 +15,45 @@ library(networkD3)
 library(pins)
 library(leaflet)
 library(tidygeocoder)
+library(igraph)
 
 # source('src/query-gs-data.R')
 # source('src/sims.R')
 
-board <- pins::board_folder('board')
+board <- pins::board_folder("board")
 
-data <- pins::pin_read(board, 'processed-data')
+data <- pins::pin_read(board, "processed-data")
 
 data <- data |> drop_na()
 
 create_network_viz <- \(data, link_distance, charge) {
-  
-  nodes <- data.frame(name = unique(c(data$participants_giver, data$participants_receiver)))  |>
-    mutate(Group = row_number())
+  plot_data <- data |>
+    select(i, participants_giver, participants_receiver) |>
+    pivot_longer(matches('participants'))
 
-  links <- data |>
-    mutate(
-      source = match(participants_giver, nodes$name) - 1,
-      target = match(participants_receiver, nodes$name) - 1,
-      value = 1
-    ) |> as.data.frame()
+  g <- make_graph(edges = plot_data$value, directed = TRUE)
+
+  p <- igraph_to_networkD3(g)
+
+  p$links$value <- 3
 
   forceNetwork(
-    Links = links,
-    Nodes = nodes,
+    Links = p$links,
+    Nodes = p$nodes,
     Source = "source",
     Target = "target",
     NodeID = "name",
     Group = "name",
-    Value = 'value',
+    Value = "value",
     opacity = .9,
     zoom = TRUE,
     fontSize = 15,
     opacityNoHover = .5,
-    linkWidth = 1,
     charge = charge,
-    arrows = FALSE,
+    arrows = TRUE,
     linkDistance = link_distance
   )
-  
 }
-
 
 ```
 
@@ -147,6 +144,7 @@ data |>
   mutate(year = as_factor(year)) |>
   deframe() |>
   imap_chr(\(data, title) {
+
     knitr::knit_child(
       'child-dashboard-page.qmd',
       envir = environment(),
