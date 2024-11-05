@@ -56,73 +56,81 @@ sims <- sims |>
 # -------------------------------------------------------------------------
 
 
-plot_data <- sims  |> 
-  select(i, participant_last, match_last) |> 
-  count(participant_last, match_last) |> 
-  group_by(participant_last) |>
-  mutate(prob = n / sum(n)) |> 
-  ungroup() |> 
-  select(-n)
-
-prob_range <- c(min(plot_data$prob), max(plot_data$prob))
-
-plot_data <- plot_data |> 
-  ungroup() |> 
-  pivot_wider(
-    names_from = match_last,
-    values_from = prob
-  ) |> 
-  mutate(group = 'Giver', .after = 'participant_last')
-
-participant_list <- names(plot_data)[!(names(plot_data) %in% c('participant_last', 'group'))]
-
-tbl <- plot_data|> 
-  group_by(group) |> 
-  gt(row_group_as_column = TRUE) |> 
-  fmt_percent(decimals = 0) |> 
-  sub_missing(missing_text = '') |> 
-  cols_label(participant_last = '') |> 
-  data_color(
-    columns = participant_list,
-    palette = 'viridis',
-    domain = prob_range
-  ) |> 
-  tab_spanner(label = 'Receiver', columns = participant_list)
+tbl <- local({
+  
+  plot_data <- sims  |> 
+    select(i, participant_last, match_last) |> 
+    count(participant_last, match_last) |> 
+    group_by(participant_last) |>
+    mutate(prob = n / sum(n)) |> 
+    ungroup() |> 
+    select(-n)
+  
+  prob_range <- c(min(plot_data$prob), max(plot_data$prob))
+  
+  plot_data <- plot_data |> 
+    ungroup() |> 
+    pivot_wider(
+      names_from = match_last,
+      values_from = prob
+    ) |> 
+    mutate(group = 'Giver', .after = 'participant_last')
+  
+  participant_list <- names(plot_data)[!(names(plot_data) %in% c('participant_last', 'group'))]
+  
+  tbl <- plot_data|> 
+    group_by(group) |> 
+    gt(row_group_as_column = TRUE) |> 
+    fmt_percent(decimals = 0) |> 
+    sub_missing(missing_text = '') |> 
+    cols_label(participant_last = '') |> 
+    data_color(
+      columns = participant_list,
+      palette = 'viridis',
+      domain = prob_range
+    ) |> 
+    tab_spanner(label = 'Receiver', columns = participant_list)
+  
+})
 
 pins::pin_write(board, tbl, 'sims-tbl-prob-last-name', type = 'rds')
 
 
 # -------------------------------------------------------------------------
 
-plot_data <- sims |> 
-  select(gender_participant, gender_match) |> 
-  count(gender_participant, gender_match) |> 
-  mutate(prob = n / sum(n)) |> 
-  select(
-    -n
-  ) |> 
-  mutate(group = 'Giver', .after = 'gender_participant')
-
-prob_range <- c(min(plot_data$prob), max(plot_data$prob))
-
-plot_data <- plot_data |> 
-  pivot_wider(
-    names_from = gender_match,
-    values_from = prob
-  )
-
-tbl <- plot_data |> 
-  group_by(group) |> 
-  gt(row_group_as_column = TRUE) |> 
-  fmt_percent(decimals = 0) |> 
-  sub_missing(missing_text = '') |> 
-  cols_label(gender_participant = '') |> 
-  data_color(
-    columns = 2:ncol(plot_data),
-    palette = 'viridis',
-    domain = prob_range
-  ) |> 
-  tab_spanner(label = 'Receiver', columns = c('F', 'M'))
+tbl <- local({
+  
+  plot_data <- sims |> 
+    select(gender_participant, gender_match) |> 
+    count(gender_participant, gender_match) |> 
+    mutate(prob = n / sum(n)) |> 
+    select(
+      -n
+    ) |> 
+    mutate(group = 'Giver', .after = 'gender_participant')
+  
+  prob_range <- c(min(plot_data$prob), max(plot_data$prob))
+  
+  plot_data <- plot_data |> 
+    pivot_wider(
+      names_from = gender_match,
+      values_from = prob
+    )
+  
+  tbl <- plot_data |> 
+    group_by(group) |> 
+    gt(row_group_as_column = TRUE) |> 
+    fmt_percent(decimals = 0) |> 
+    sub_missing(missing_text = '') |> 
+    cols_label(gender_participant = '') |> 
+    data_color(
+      columns = 2:ncol(plot_data),
+      palette = 'viridis',
+      domain = prob_range
+    ) |> 
+    tab_spanner(label = 'Receiver', columns = c('F', 'M'))
+  
+})
 
 tbl
 
