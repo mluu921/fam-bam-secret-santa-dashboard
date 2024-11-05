@@ -35,7 +35,7 @@ create_network_viz <- \(data, link_distance, charge) {
 
   p <- igraph_to_networkD3(g)
 
-  p$links$value <- 3
+  p$links$value <- 5
 
   forceNetwork(
     Links = p$links,
@@ -57,7 +57,29 @@ create_network_viz <- \(data, link_distance, charge) {
 
 ```
 
-# Home
+## 
+```{r}
+#| expandable: true
+#| title: Who has given and received gifts from who?
+
+create_network_viz(data, link_distance = 200, charge = -100)
+
+data |> 
+  select(year, participants_giver, participants_receiver) |> 
+  pivot_wider(names_from = participants_receiver, values_from = year,
+              values_fn = \(x) paste0(x, collapse = ', ')) |> 
+  group_by(group = 'Giver') |>  
+  gt(row_group_as_column = TRUE) |> 
+  sub_missing() |> 
+  cols_label(participants_giver = '') |> 
+  tab_spanner(label = 'Receiver', columns = 2:16) |> 
+  tab_options(
+    data_row.padding = px(0),
+    table.font.size = px(10)
+  )
+
+
+```
 
 ## 
 
@@ -98,14 +120,7 @@ out
 ```
 
 
-## 
 
-```{r}
-#| expandable: true
-#| title: Who has matched with who?
-
-create_network_viz(data, link_distance = 150, charge = -200)
-```
 
 ## 
 
@@ -134,24 +149,23 @@ local({
 
 ```
 
+
+
 ```{r}
 #| results: asis
-
-data |>
-  group_nest(year) |>
-  mutate(year = as.numeric(year)) |>
-  arrange(desc(year)) |>
-  mutate(year = as_factor(year)) |>
-  deframe() |>
-  imap_chr(\(data, title) {
+#| eval: false
+out <- pmap_chr(params, ~ {
 
     knitr::knit_child(
       'child-dashboard-page.qmd',
       envir = environment(),
       quiet = TRUE
     )
-    
-    
-  }) |> cat(sep = '\n')
+
+})
+
+cat(unlist(out), sep = '\n')
 
 ```
+
+
