@@ -64,20 +64,23 @@ create_network_viz <- \(data, link_distance, charge) {
 
 create_network_viz(data, link_distance = 200, charge = -100)
 
-data |> 
-  select(year, participants_giver, participants_receiver) |> 
-  pivot_wider(names_from = participants_receiver, values_from = year,
-              values_fn = \(x) paste0(x, collapse = ', ')) |> 
-  group_by(group = 'Giver') |>  
-  gt(row_group_as_column = TRUE) |> 
-  sub_missing() |> 
-  cols_label(participants_giver = '') |> 
-  tab_spanner(label = 'Receiver', columns = 2:16) |> 
-  tab_options(
-    data_row.padding = px(0),
-    table.font.size = px(10)
-  )
-
+local({
+  tbl_data <- data |>
+    select(year, participants_giver, participants_receiver) |>
+    pivot_wider(
+      names_from = participants_receiver,
+      values_from = year,
+      values_fn = \(x) paste0(x, collapse = ', ')
+    )
+  
+  tbl_data |>
+    group_by(group = 'Giver') |>
+    gt(row_group_as_column = TRUE) |>
+    sub_missing() |>
+    cols_label(participants_giver = '') |>
+    tab_spanner(label = 'Receiver', columns = tbl_data$participants_giver)
+  
+})
 
 ```
 
